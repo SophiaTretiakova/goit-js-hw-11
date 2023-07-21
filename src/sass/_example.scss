@@ -26,3 +26,12 @@
   background-size: cover;
   background-position: center;
 }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.photo-card {
+  height: 350px;
+}
