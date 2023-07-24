@@ -127,7 +127,9 @@ function renderCards(data) {
         return `
     <a href="${largeImageURL}">
       <div class="photo-card">
-        <img src="${webformatURL}" alt="${tags}" loading="lazy" width="200px"/>
+        <div class="img-back">
+          <img src="${webformatURL}" alt="${tags}" loading="lazy" class="img"/>
+        </div>
         <div class="info">
           <p class="info-item">
             <b>Likes: </b>${likes}
