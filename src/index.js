@@ -1,6 +1,7 @@
 import Notiflix from 'notiflix';
 import axios from 'axios';
 import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const API_KEY = '38365619-1621c1d79dbc4654c84d21e00';
 const BASE_URL = 'https://pixabay.com/api/';
@@ -16,6 +17,8 @@ const refs = {
   galleryEl: document.querySelector('.gallery'),
   loadBtnEl: document.querySelector('.load-more'),
 };
+
+let lightbox = new SimpleLightbox('.gallery a');
 
 let page = 1;
 let limit = DEFAULT_LIMIT;
@@ -49,7 +52,7 @@ async function fetchImages(url) {
     Notiflix.Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.'
     );
-    return [];
+    return;
   }
 }
 
@@ -57,18 +60,25 @@ refs.searchFormEl.addEventListener('submit', handleSearchSubmit);
 
 function handleSearchSubmit(event) {
   event.preventDefault();
+  page = 1;
   refs.galleryEl.innerHTML = '';
-  refs.loadBtnEl.classList.remove('hidden');
   refs.searchInputEl.value = refs.searchInputEl.value.trim();
+  if (!refs.searchInputEl.value) {
+    Notiflix.Notify.failure(
+      'Sorry, your search query is empty. Please enter what you want to search.'
+    );
+    refs.loadBtnEl.classList.add('hidden');
+    return;
+  }
   const searchInput = refs.searchInputEl.value;
   const url = generatePixabayURL(searchInput);
-  fetchImages(url)
-    .then(data => {
-      renderCards(data);
-      page = 2;
-      refs.loadBtnEl.addEventListener('click', handleLoadMoreClick);
-    })
-    .catch(error => console.log(error));
+  fetchImages(url).then(data => {
+    renderCards(data);
+    page = 2;
+    lightbox = lightbox.refresh();
+    refs.loadBtnEl.addEventListener('click', handleLoadMoreClick);
+  });
+  refs.loadBtnEl.classList.remove('hidden');
 }
 
 function generatePixabayURL(query) {
@@ -81,18 +91,25 @@ function generatePixabayURL(query) {
     per_page: limit,
     page,
   });
+  console.log(`${BASE_URL}?${params}`);
   return `${BASE_URL}?${params}`;
 }
 
 function handleLoadMoreClick() {
   const searchInput = refs.searchInputEl.value;
   const url = generatePixabayURL(searchInput);
-  fetchImages(url)
-    .then(data => {
-      renderCards(data);
-      page += 1;
-    })
-    .catch(error => console.log(error));
+  fetchImages(url).then(data => {
+    renderCards(data);
+    page += 1;
+    const { height: cardHeight } = document
+      .querySelector('.gallery')
+      .firstElementChild.getBoundingClientRect();
+    lightbox = lightbox.refresh();
+    window.scrollBy({
+      top: cardHeight * 2,
+      behavior: 'smooth',
+    });
+  });
 }
 
 function renderCards(data) {
@@ -134,6 +151,3 @@ function renderCards(data) {
   refs.galleryEl.insertAdjacentHTML('beforeend', cards);
   refs.searchInputEl.value = '';
 }
-
-// Initialize SimpleLightbox
-new SimpleLightbox('.gallery a');
