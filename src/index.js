@@ -22,6 +22,7 @@ window.addEventListener('load', () => {
 refs.searchFormEl.addEventListener('submit', handleSearchSubmit);
 
 function handleSearchSubmit(event) {
+  refs.loaderEl.classList.remove('hidden');
   event.preventDefault();
   page = 1;
   refs.galleryEl.innerHTML = '';
@@ -45,6 +46,7 @@ function handleSearchSubmit(event) {
     page = 2;
     lightbox = lightbox.refresh();
     refs.loadBtnEl.addEventListener('click', handleLoadMoreClick);
+    refs.loaderEl.classList.add('hidden');
   });
 }
 

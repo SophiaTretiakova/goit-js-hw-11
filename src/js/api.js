@@ -15,7 +15,6 @@ async function fetchImages(url) {
   try {
     const response = await axios.get(url);
     const data = response.data;
-    console.log(data);
     const matches = data.hits;
 
     if (!matches.length) {
@@ -25,7 +24,7 @@ async function fetchImages(url) {
         'Sorry, there are no images matching your search query. Please try again.'
       );
     }
-
+    refs.loaderEl.classList.remove('hidden');
     return { data: matches, totalHits: data.totalHits };
   } catch (error) {
     Notiflix.Notify.failure(
