@@ -16,7 +16,7 @@ function renderCards(data) {
     <a href="${largeImageURL}">
       <div class="photo-card">
         <div class="img-back">
-          <img src="${webformatURL}" alt="${tags}" loading="lazy" class="img      "/>
+          <img src="${webformatURL}" alt="${tags}" loading="lazy" class="img"/>
         </div>
         <div class="info">
           <p class="info-item">

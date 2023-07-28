@@ -55,6 +55,7 @@ function handleLoadMoreClick() {
   const url = generatePixabayURL(searchInput);
   fetchImages(url).then(({ data, totalHits }) => {
     if (Math.ceil(page > totalHits / DEFAULT_LIMIT)) {
+      refs.loaderEl.classList.add('hidden');
       refs.loadBtnEl.classList.add('hidden');
     }
     renderCards(data);
